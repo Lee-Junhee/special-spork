@@ -7,20 +7,23 @@
 
 void run(char *** args) {
 	int i = 0;
+	int exited = 0;
 	int cpid, status;
 	while (args[i]) {
 		if (!strcmp(args[i][0], "exit")) {
-			exit(0);
+			exited = 1;
 		}
-		if (!strcmp(args[i][0], "cd")) {
-			chcwd(args[i][1]);
-		}
-		cpid = fork();
-		if (cpid){
-			wait(status);
-		}else {
-			execvp(args[i][0], args[i]);
-			exit(0);
+		if (!exited) {
+			if (!strcmp(args[i][0], "cd")) {
+				chcwd(args[i][1]);
+			}
+			cpid = fork();
+			if (cpid){
+				wait(status);
+			}else {
+				execvp(args[i][0], args[i]);
+				exit(0);
+			}
 		}
 		i++;
 	}
@@ -29,4 +32,7 @@ void run(char *** args) {
 		free(args[i--]);
 	}
 	free(args);
+	if (exited) {
+		exit(0);
+	}
 }

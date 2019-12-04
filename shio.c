@@ -23,12 +23,12 @@ char *** parse_args(char *line) {
 	int j;
 	char * cmd;
 	char ** args;
-	char *** commands = malloc(sizeof(char **));
+	char *** commands = NULL;
 	do {
 		commands = realloc(commands, sizeof(char **) * (i + 1));
 		cmd = strsep(&line, ";");
 		if (cmd) {
-			args = malloc(sizeof(char *));
+			args = NULL;
 			j = 0;
 			do {
 				args = realloc(args, sizeof(char *) *  (j + 1));
