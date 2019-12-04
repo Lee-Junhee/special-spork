@@ -1,10 +1,14 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
+#include<unistd.h>
 #include"shio.h"
 
 char * get_input() {
 	char input[256];
+	char path[256];
+	getcwd(path, 256);
+	printf("%s$ ", path);
 	fgets(input, 256, stdin);
 	char * line = input;
 	char * formatted = calloc(256, sizeof(char));

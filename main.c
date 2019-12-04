@@ -4,7 +4,9 @@
 #include"shlib.h"
 
 int main() {
-	char * input = get_input();
-	char *** argv = parse_args(input);
-	run(argv);
+	while (1) {
+		char * input = get_input();
+		char *** argv = parse_args(input);
+		run(argv);
+	}
 }
