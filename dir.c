@@ -17,3 +17,14 @@ void chcwd(char * path) {
 		chdir(dir);
 	}
 }
+
+void homify(char * path) {
+	char homedir[64];
+	strncpy(homedir, getenv("HOME"), 64);
+	if (!strncmp(path, homedir, strlen(homedir))) {
+		char dir[256] = "";
+		strcpy(dir, path + strlen(homedir));
+		strcpy(path, "~");
+		strcat(path, dir);
+	}
+}

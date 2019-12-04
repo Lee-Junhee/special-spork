@@ -3,11 +3,13 @@
 #include<string.h>
 #include<unistd.h>
 #include"shio.h"
+#include"dir.h"
 
 char * get_input() {
 	char input[256];
 	char path[256];
 	getcwd(path, 256);
+	homify(path);
 	printf("%s$ ", path);
 	fgets(input, 256, stdin);
 	char * line = input;
