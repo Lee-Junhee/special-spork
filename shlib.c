@@ -3,6 +3,7 @@
 #include<unistd.h>
 #include<string.h>
 #include"shlib.h"
+#include"dir.h"
 
 void run(char *** args) {
 	int i = 0;
@@ -12,13 +13,14 @@ void run(char *** args) {
 			exit(0);
 		}
 		if (!strcmp(args[i][0], "cd")) {
-			chdir(args[i][1]);
+			chcwd(args[i][1]);
 		}
 		cpid = fork();
 		if (cpid){
 			wait(status);
 		}else {
 			execvp(args[i][0], args[i]);
+			exit(0);
 		}
 		i++;
 	}
