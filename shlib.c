@@ -5,7 +5,7 @@
 #include"shlib.h"
 #include"dir.h"
 
-void run(char *** args) {
+int run(char *** args) {
 	int i = 0;
 	int exited = 0;
 	int cpid, status;
@@ -16,13 +16,13 @@ void run(char *** args) {
 		if (!exited) {
 			if (!strcmp(args[i][0], "cd")) {
 				chcwd(args[i][1]);
-			}
-			cpid = fork();
-			if (cpid){
-				wait(status);
 			}else {
-				execvp(args[i][0], args[i]);
-				exit(0);
+				cpid = fork();
+				if (cpid){
+					wait(status);
+				}else {
+					execute(args[i]);
+				}
 			}
 		}
 		i++;
@@ -34,5 +34,13 @@ void run(char *** args) {
 	free(args);
 	if (exited) {
 		exit(0);
+	}
+}
+
+void execute(char ** args) {
+	if (0) {
+		wait(0);
+	}else {
+		execvp(args[0], args);
 	}
 }

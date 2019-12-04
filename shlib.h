@@ -1,1 +1,2 @@
-void run(char *** args);
+int run(char *** args);
+void execute(char ** args);
