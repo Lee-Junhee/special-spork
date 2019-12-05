@@ -10,7 +10,9 @@ char * get_input() {
 	char path[256];
 	getcwd(path, 256);
 	homify(path);
+	printf("\033[1;36m");
 	printf("%s$ ", path);
+	printf("\033[0m");
 	fgets(input, 256, stdin);
 	char * line = input;
 	char * formatted = calloc(256, sizeof(char));

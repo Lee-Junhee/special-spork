@@ -41,6 +41,25 @@ void execute(char ** args) {
 	if (0) {
 		wait(0);
 	}else {
+		if (!strcmp(args[0], "ls")) {
+			int i = 0;
+			while (args[i]) {
+				i++;
+			}
+			char * newargs[i + 2];
+			char * color = "--color";
+			newargs[i + 1] = NULL;
+			newargs[i--] = color;
+			while (i + 1) {
+				newargs[i] = args[i];
+				i--;
+			}
+			execvp(newargs[0], newargs);
+
+		}
+		if (args[0]) {
+			exit(0);
+		}
 		execvp(args[0], args);
 	}
 }
