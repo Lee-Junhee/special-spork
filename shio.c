@@ -7,12 +7,7 @@
 
 char * get_input() {
 	char input[256];
-	char path[256];
-	getcwd(path, 256);
-	homify(path);
-	printf("\033[1;36m");
-	printf("%s$ ", path);
-	printf("\033[0m");
+	print_home();
 	fgets(input, 256, stdin);
 	char * line = input;
 	char * formatted = calloc(256, sizeof(char));
@@ -42,4 +37,13 @@ char *** parse_args(char *line) {
 		}
 	} while (commands[i++]);
 	return commands;
+}
+
+void print_home() {
+	char path[256];
+	getcwd(path, 256);
+	homify(path);
+	printf("\033[1;36m");
+	printf("%s$ ", path);
+	printf("\033[0m");
 }

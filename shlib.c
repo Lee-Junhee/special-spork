@@ -57,9 +57,7 @@ void execute(char ** args) {
 			execvp(newargs[0], newargs);
 
 		}
-		if (args[0]) {
-			exit(0);
-		}
 		execvp(args[0], args);
+		exit(0);
 	}
 }
