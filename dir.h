@@ -1,2 +1,2 @@
 void chcwd(char * path);
-char * homify(char * path);
+void homify(char * path);

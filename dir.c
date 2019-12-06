@@ -1,6 +1,11 @@
+#include<errno.h>
+#include<stdio.h>
+#include<dirent.h>
 #include<stdlib.h>
 #include<string.h>
 #include<unistd.h>
+#include<sys/types.h>
+#include"dir.h"
 
 void chcwd(char * path) {
 	if (path) {
@@ -14,7 +19,13 @@ void chcwd(char * path) {
 			strcpy(dir, homedir);
 		}
 		strncat(dir, path + 1, 192);
-		chdir(dir);
+		DIR * directory = opendir(dir);
+		if (directory) {
+			closedir(directory);
+			chdir(dir);
+		}else {
+			printf("cd: %s: %s\n", dir, strerror(errno));
+		}
 	}
 }
 
