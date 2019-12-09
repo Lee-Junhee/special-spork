@@ -57,9 +57,15 @@ char redir(char ** args) {
 	while (args[i]) {
 		if (!strncmp(args[i], ">", 1)) {
 			if (!args[i][1]) {
+				fd = open(args[i + 1], O_CREAT | O_WRONLY | O_TRUNC, 0777);
+				args[i] = "";
+				args[i + 1] = "";
 			}else {
 				if (!strncmp(args[i], ">>", 2)) {
 					if (!args[i][2]) {
+						fd = open(args[i + 1], O_CREAT | O_WRONLY | O_APPEND, 0777);
+						args[i] = "";
+						args[i + 1] = "";
 					}else {
 						fd = open(args[i] + 2, O_CREAT | O_WRONLY | O_APPEND, 0777);
 						args[i] = "";
