@@ -1,4 +1,5 @@
 #include<stdio.h>
+#include<fcntl.h>
 #include<stdlib.h>
 #include<string.h>
 #include<unistd.h>
@@ -46,4 +47,61 @@ void print_home() {
 	printf("\033[1;36m");
 	printf("%s$ ", path);
 	printf("\033[0m");
+}
+
+void redir(char ** args) {
+	char * arg;
+	int i = 0;
+	char in = 0;
+	char out = 0;
+	int fd;
+	do {
+		arg = args[i];
+		if (!strncmp(">", arg, 1)) {
+			if (out) {
+				if (!args[i][1]) {
+					fd = open(args[i + 1], O_WRONLY | O_TRUNC, 0777);
+				}else {
+					if (!strncmp(arg + 1, ">", 1)) {
+						if (!args[i][2]) {
+							fd = open(args[i + 1], O_WRONLY | O_APPEND, 0777);
+						}else {
+							fd = open()
+						}
+					}else {
+						fd = open(args[i] + 1, )
+					}
+				}
+				out = 1;
+			}else {
+				if (!args[i][1]) {
+					strcpy(args[i + 1], "");
+				}else {
+					if (!strncmp(arg + 1, ">", 1) & !args[i][2]) {
+						strcpy(args[i + 1], "");
+					}
+				}
+				strcpy(args[i], "");
+			}
+		}
+		if (!strncmp("<", arg, 1)) {
+			if (in) {
+				if (!args[i][1]) {
+					fd = open(args[i + 1], O_RDONLY);
+				}else {
+					fd = open(&args[i][1], O_RDONLY);
+				}
+				//add args to end of args 
+				in = 1;
+			}else {
+				if (!args[i][1]) {
+					strcpy(args[i + 1], "");
+				}
+				strcpy(args[i], "");
+			}
+		}
+	} while (args[i++]);
+}
+
+void rmempty (char ** args) {
 }
