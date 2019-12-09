@@ -13,7 +13,7 @@ main.o: main.c shio.h shlib.h
 shio.o: shio.c shio.h 
 	$(CC) -c shio.c
 
-shlib.o: shlib.c shlib.h dir.h
+shlib.o: shlib.c shlib.h shio.c dir.h
 	$(CC) -c shlib.c
 
 dir.o:

@@ -3,6 +3,7 @@
 #include<unistd.h>
 #include<string.h>
 #include"shlib.h"
+#include"shio.h"
 #include"dir.h"
 
 int run(char *** args) {
@@ -38,8 +39,9 @@ int run(char *** args) {
 }
 
 void execute(char ** args) {
-	if (0) {
-		wait(0);
+	if (redir(args)) {
+		execvp(args[0], args);
+		exit(0);
 	}else {
 		if (!strcmp(args[0], "ls")) {
 			int i = 0;

@@ -49,59 +49,62 @@ void print_home() {
 	printf("\033[0m");
 }
 
-void redir(char ** args) {
-	char * arg;
-	int i = 0;
+char redir(char ** args) {
 	char in = 0;
 	char out = 0;
-	int fd;
-	do {
-		arg = args[i];
-		if (!strncmp(">", arg, 1)) {
-			if (out) {
-				if (!args[i][1]) {
-					fd = open(args[i + 1], O_WRONLY | O_TRUNC, 0777);
-				}else {
-					if (!strncmp(arg + 1, ">", 1)) {
-						if (!args[i][2]) {
-							fd = open(args[i + 1], O_WRONLY | O_APPEND, 0777);
-						}else {
-							fd = open()
-						}
+	int i = 0;
+	int fd = 1;
+	while (args[i]) {
+		if (!strncmp(args[i], ">", 1)) {
+			if (!args[i][1]) {
+			}else {
+				if (!strncmp(args[i], ">>", 2)) {
+					if (!args[i][2]) {
 					}else {
-						fd = open(args[i] + 1, )
+						fd = open(args[i] + 2, O_CREAT | O_WRONLY | O_APPEND, 0777);
+						args[i] = "";
 					}
-				}
-				out = 1;
-			}else {
-				if (!args[i][1]) {
-					strcpy(args[i + 1], "");
 				}else {
-					if (!strncmp(arg + 1, ">", 1) & !args[i][2]) {
-						strcpy(args[i + 1], "");
-					}
+					fd = open(args[i] + 1, O_CREAT | O_WRONLY | O_TRUNC, 0777);
+					args[i] = "";
 				}
-				strcpy(args[i], "");
 			}
+			dup2(fd, 1);
+			out = 1;
 		}
-		if (!strncmp("<", arg, 1)) {
-			if (in) {
-				if (!args[i][1]) {
-					fd = open(args[i + 1], O_RDONLY);
-				}else {
-					fd = open(&args[i][1], O_RDONLY);
-				}
-				//add args to end of args 
-				in = 1;
-			}else {
-				if (!args[i][1]) {
-					strcpy(args[i + 1], "");
-				}
-				strcpy(args[i], "");
-			}
-		}
-	} while (args[i++]);
+		i++;
+	}
+	rmempty(args);
+	return out;
 }
 
 void rmempty (char ** args) {
+	if (args) {
+		int nonempty = 0;
+		int len = 0;
+		while (args[len]) {
+			if (strcmp("", args[len])) {
+				nonempty++;
+			}
+			len++;
+		}
+		char *full[nonempty + 1];
+		full[nonempty] = NULL;
+		len = 0;
+		nonempty = 0;
+		while (args[len]) {
+			if (strcmp("", args[len])) {
+				full[nonempty] = args[len];
+				nonempty++;
+			}
+			len++;
+		}
+		args = realloc(args, nonempty);
+		len = 0;
+		while (full[len]) {
+			args[len] = full[len];
+			len++;
+		}
+		args[len] = NULL;
+	}
 }
