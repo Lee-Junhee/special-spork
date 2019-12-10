@@ -53,6 +53,7 @@ char redir(char ** args) {
 	char in = 0;
 	char out = 0;
 	int i = 0;
+	int j;
 	int fd = 1;
 	while (args[i]) {
 		if (!strncmp(args[i], ">", 1)) {
@@ -75,13 +76,39 @@ char redir(char ** args) {
 					args[i] = "";
 				}
 			}
-			dup2(fd, 1);
+			if (!out) {
+				dup2(fd, 1);
+			}
 			out = 1;
+		}
+		if (!strncmp(args[i], "<", 1)) {
+			if (!in) {
+				if (!args[i][1]) {
+					strcat(args[i], args[i + 1]);
+					args[i + 1] = "";
+				}
+				char * file = args[i];
+				j = i;
+				while (j) {
+					args[j] = args[j - 1];
+					j--;
+				}
+				args[0] = file;
+
+			}else {
+				if (!args[i][1]) {
+					args[i] = "";
+					args[i + 1] = "";
+				}else {
+					args[i] = "";
+				}
+			}
+			in = 2;
 		}
 		i++;
 	}
 	rmempty(args);
-	return out;
+	return in + out;
 }
 
 void rmempty (char ** args) {

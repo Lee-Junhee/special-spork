@@ -1,7 +1,9 @@
 #include<stdio.h>
+#include<fcntl.h>
 #include<stdlib.h>
 #include<unistd.h>
 #include<string.h>
+#include<sys/stat.h>
 #include"shlib.h"
 #include"shio.h"
 #include"dir.h"
@@ -39,7 +41,50 @@ int run(char *** args) {
 }
 
 void execute(char ** args) {
-	if (redir(args)) {
+	int redirected = redir(args);
+	if (redirected & 2) {
+		char * file = args[0];
+		file++;
+		struct stat fileinfo;
+		stat(file, &fileinfo);
+		int fd;
+		fd = open(file, O_RDONLY);
+		char raw[fileinfo.st_size];
+		char contents[fileinfo.st_size];
+		read(fd, raw, fileinfo.st_size);
+		strncpy(contents, raw, fileinfo.st_size);
+		char * content = contents;
+		char ** newargs = NULL;
+		int a = 0;
+		do {
+			newargs = realloc(newargs, sizeof(char *) * (a + 1));
+			newargs[a] = strsep(&content, " \n");
+		} while (newargs[a++]);
+		rmempty(newargs);
+		int b = 0;
+		while (args[b]) {
+			b++;
+		}
+		char * oldargs[b];
+		while (b) {
+			oldargs[b - 1] = args[b];
+			b--;
+		}
+		char * allargs[a + b];
+		b = 0;
+		while (oldargs[b]) {
+			allargs[b] = oldargs[b];
+			b++;
+		}
+		a = 0;
+		while (newargs[a]) {
+			allargs[a + b] = newargs[a];
+			a++;
+		}
+		allargs[a + b] = NULL;
+		args = allargs;
+	}
+	if (redirected & 1) {
 		execvp(args[0], args);
 		exit(0);
 	}else {
@@ -48,15 +93,15 @@ void execute(char ** args) {
 			while (args[i]) {
 				i++;
 			}
-			char * newargs[i + 2];
+			char * newarg[i + 2];
 			char * color = "--color";
-			newargs[i + 1] = NULL;
-			newargs[i--] = color;
+			newarg[i + 1] = NULL;
+			newarg[i--] = color;
 			while (i + 1) {
-				newargs[i] = args[i];
+				newarg[i] = args[i];
 				i--;
 			}
-			execvp(newargs[0], newargs);
+			execvp(newarg[0], newarg);
 
 		}
 		execvp(args[0], args);
