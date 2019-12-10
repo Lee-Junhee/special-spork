@@ -141,3 +141,35 @@ void rmempty (char ** args) {
 		args[len] = NULL;
 	}
 }
+
+char ** nonnull (char ** args) {
+	if (args) {
+		int nonempty = 0;
+		int len = 0;
+		while (args[len]) {
+			if (strcmp("", args[len])) {
+				nonempty++;
+			}
+			len++;
+		}
+		char *full[nonempty + 1];
+		full[nonempty] = NULL;
+		len = 0;
+		nonempty = 0;
+		while (args[len]) {
+			if (strcmp("", args[len])) {
+				full[nonempty] = args[len];
+				nonempty++;
+			}
+			len++;
+		}
+		char ** copy = calloc(sizeof(char *), nonempty + 1);
+		len = 0;
+		while (full[len]) {
+			copy[len] = full[len];
+			len++;
+		}
+		return copy;
+	}
+	return NULL;
+}

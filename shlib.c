@@ -41,70 +41,67 @@ int run(char *** args) {
 }
 
 void execute(char ** args) {
-	int redirected = redir(args);
+	char redirected = redir(args);
+	int size = 1;
+	char * file = args[0] + 1;
 	if (redirected & 2) {
-		char * file = args[0];
-		file++;
 		struct stat fileinfo;
 		stat(file, &fileinfo);
-		int fd;
-		fd = open(file, O_RDONLY);
-		char raw[fileinfo.st_size];
-		char contents[fileinfo.st_size];
-		read(fd, raw, fileinfo.st_size);
-		strncpy(contents, raw, fileinfo.st_size);
-		char * content = contents;
-		char ** newargs = NULL;
-		int a = 0;
+		size = fileinfo.st_size;
+	}
+	char content[size + 1];
+	int k = 1;
+	if (redirected & 2) {
+		char raw[size];
+		int fd = open(file, O_RDONLY);
+		read(fd, raw, size);
+		close(fd);
+		strcpy(content, raw);
+		k = 0;
+	}
+	char * newargs[64];
+	int j = 1;
+	if (redirected & 2) {
+		char * point = content;
 		do {
-			newargs = realloc(newargs, sizeof(char *) * (a + 1));
-			newargs[a] = strsep(&content, " \n");
-		} while (newargs[a++]);
-		rmempty(newargs);
-		int b = 0;
-		while (args[b]) {
-			b++;
+			newargs[k] = strsep(&point, " \n");
+		} while (newargs[k++]);
+		j = 0;
+		while (args[j]) {
+			j++;
 		}
-		char * oldargs[b];
-		while (b) {
-			oldargs[b - 1] = args[b];
-			b--;
+		k += j;
+	}
+	char * oldargs[j];
+	if (redirected & 2) {
+		while (j) {
+			oldargs[j - 1] = args[j];
+			j--;
 		}
-		char * allargs[a + b];
-		b = 0;
-		while (oldargs[b]) {
-			allargs[b] = oldargs[b];
-			b++;
+	}
+	char * allargs[k];
+	if (redirected & 2) {
+		j = 0;
+		while (oldargs[j]) {
+			allargs[j] = oldargs[j];
+			j++;
 		}
-		a = 0;
-		while (newargs[a]) {
-			allargs[a + b] = newargs[a];
-			a++;
+		k = 0;
+		while (newargs[k]) {
+			allargs[j + k] = newargs[k];
+			k++;
 		}
-		allargs[a + b] = NULL;
+		allargs[j + k] = NULL;
 		args = allargs;
 	}
-	if (redirected & 1) {
-		execvp(args[0], args);
-		exit(0);
-	}else {
-		if (!strcmp(args[0], "ls")) {
-			int i = 0;
-			while (args[i]) {
-				i++;
-			}
-			char * newarg[i + 2];
-			char * color = "--color";
-			newarg[i + 1] = NULL;
-			newarg[i--] = color;
-			while (i + 1) {
-				newarg[i] = args[i];
-				i--;
-			}
-			execvp(newarg[0], newarg);
-
-		}
-		execvp(args[0], args);
-		exit(0);
+	char ** temp = nonnull(args);
+	j = 0;
+	while (temp[j]) {
+		allargs[j] = temp[j];
+		j++;
 	}
+	temp[j] = NULL;
+	args = temp;
+	execvp(args[0], args);
+	exit(0);
 }
