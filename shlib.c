@@ -101,6 +101,27 @@ void execute(char ** args) {
 		allargs[j] = NULL;
 		free(temp);
 		args = allargs;
+		j = 0;
+	}
+	if (!(redirected & 1)) {
+		j = 0;
+		while (args[j]) {
+			j++;
+		}
+	}
+	char * coloured[j + 1];
+	char * colour = "--color";
+	if (!(redirected & 1)) {
+		if (!strcmp("ls", args[0])) {
+			j = 0;
+			while (args[j]) {
+				coloured[j] = args[j];
+				j++;
+			}
+			coloured[j] = colour;
+			coloured[j + 1] = NULL;
+			args = coloured;
+		}
 	}
 	execvp(args[0], args);
 	exit(0);
