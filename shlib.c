@@ -92,16 +92,16 @@ void execute(char ** args) {
 			k++;
 		}
 		allargs[j + k] = NULL;
+		char ** temp = nonnull(allargs);
+		j = 0;
+		while (temp[j]) {
+			allargs[j] = temp[j];
+			j++;
+		}
+		allargs[j] = NULL;
+		free(temp);
 		args = allargs;
 	}
-	char ** temp = nonnull(args);
-	j = 0;
-	while (temp[j]) {
-		allargs[j] = temp[j];
-		j++;
-	}
-	temp[j] = NULL;
-	args = temp;
 	execvp(args[0], args);
 	exit(0);
 }
