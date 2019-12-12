@@ -188,6 +188,7 @@ void parse_exec(char ** args, int r, int w) {
 	char ** pnonnull;
 	if (r) {
 		read(r, rawpipein, 255);
+		printf("%s\n", rawpipein);
 		strcpy(pipein, rawpipein);
 		pipein[255] = NULL;
 		char * ppoint = pipein;
@@ -199,6 +200,7 @@ void parse_exec(char ** args, int r, int w) {
 		j = 0;
 		while (pnonnull[j]) {
 			pargs[j] = pnonnull[j];
+			printf("%s\n", pargs[j]);
 			j++;
 		}
 		pargs[j] = NULL;
