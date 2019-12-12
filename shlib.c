@@ -168,7 +168,7 @@ void parse_exec(char ** args, int r, int w) {
 	//inserts color into ls
 	char * coloured[j + 1];
 	char * colour = "--color";
-	if (!(redirected & 1)) {
+	if (!(redirected & 1) & !(w - 1)) {
 		if (!strcmp("ls", args[0])) {
 			j = 0;
 			while (args[j]) {
@@ -182,13 +182,14 @@ void parse_exec(char ** args, int r, int w) {
 	}
 
 	//redirect input from pipe
-	char rawpipein[256];
-	char pipein[255];
+	char rawpipein[255];
+	char pipein[256];
 	char * pargs[64];
 	char ** pnonnull;
 	if (r) {
-		read(r, pipein, 255);
+		read(r, rawpipein, 255);
 		strcpy(pipein, rawpipein);
+		pipein[255] = NULL;
 		char * ppoint = pipein;
 		j = 0;
 		do {
