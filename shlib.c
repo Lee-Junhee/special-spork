@@ -61,15 +61,15 @@ void execute(char ** args) {
 			}
 		}
 		if (args[i + j]) {
-			printf("%s\n", args[i + j]);
-			if (args[i + j] + sizeof(char *)) {
-				entry = NULL;
-				args[i + j] = NULL;
-				i++;
-			}else {
-				args[i + j] = args[i + j] + sizeof(char *);
-				entry = args[i + j];
-				args[i + j] = NULL;
+			if (!strncmp(args[i + j], "|", 1)) {
+				if (!args[i + j][1]) {
+					entry = NULL;
+					args[i + j] = NULL;
+					i++;
+				}else {
+					entry = &args[i + j][1];
+					args[i + j] = NULL;
+				}
 			}
 			pipe(temp);
 			cpid = fork();
