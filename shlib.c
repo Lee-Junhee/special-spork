@@ -92,6 +92,7 @@ void execute(char ** args) {
 		margs = realloc(margs, sizeof(char *) * (i + 2));
 	} while (args[j + i++]);
 	parse_exec(margs, fd[0], fd[1]);
+	exit(0);
 }
 
 void parse_exec(char ** args, int r, int w) {
