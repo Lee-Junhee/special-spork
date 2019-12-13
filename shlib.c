@@ -92,7 +92,6 @@ void execute(char ** args) {
 		margs = realloc(margs, sizeof(char *) * (i + 2));
 	} while (args[j + i++]);
 	parse_exec(margs, fd[0], fd[1]);
-	exit(0);
 }
 
 void parse_exec(char ** args, int r, int w) {
@@ -105,12 +104,5 @@ void parse_exec(char ** args, int r, int w) {
 	dup2(w, 1);
 
 	//execute
-	int cpid = fork();
-	int status;
-	if (cpid) {
-		wait(status);
-		close(w);
-	}else {
 	execvp(args[0], args);
-	}
 }
