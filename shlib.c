@@ -103,6 +103,24 @@ void parse_exec(char ** args, int r, int w) {
 	//redirect output to pipe
 	dup2(w, 1);
 
+	//color ls
+	if (!strcmp(args[0], "ls") & !(w - 1)) {
+		int i = 0;
+		while (args[i]) {
+			i++;
+		}
+		char * newarg[i + 2];
+		char * color = "--color";
+		newarg[i + 1] = NULL;
+		newarg[i--] = color;
+		while (i + 1) {
+			newarg[i] = args[i];
+			i--;
+		}
+		execvp(newarg[0], newarg);
+
+	}
+
 	//execute
 	execvp(args[0], args);
 }
