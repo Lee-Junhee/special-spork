@@ -74,12 +74,12 @@ void execute(char ** args) {
 			pipe(temp);
 			cpid = fork();
 			if (cpid) {
+				close(temp[1]);
 				fd[0] = temp[0];
 				if (entry) {
 					args[i + j] = entry;
 				}
 				wait(status);
-				printf("done!\n");
 			}else {
 				fd[1] = temp[1];
 				break;
@@ -91,8 +91,8 @@ void execute(char ** args) {
 		margs[i] = args[i + j];
 		margs = realloc(margs, sizeof(char *) * (i + 2));
 	} while (args[j + i++]);
-	printf("executing [%s]\n", margs[0]);
 	parse_exec(margs, fd[0], fd[1]);
+	exit(0);
 }
 
 void parse_exec(char ** args, int r, int w) {
@@ -105,6 +105,12 @@ void parse_exec(char ** args, int r, int w) {
 	dup2(w, 1);
 
 	//execute
+	int cpid = fork();
+	int status;
+	if (cpid) {
+		wait(status);
+		close(w);
+	}else {
 	execvp(args[0], args);
-	exit(0);
+	}
 }
