@@ -84,17 +84,14 @@ char redir(char ** args) {
 		if (!strncmp(args[i], "<", 1)) {
 			if (!in) {
 				if (!args[i][1]) {
-					strcat(args[i], args[i + 1]);
+					args[i] = "";
+					fd = open(args[i + 1], O_RDONLY);
 					args[i + 1] = "";
+				}else {
+					fd = open(args[i] + 1, O_RDONLY);
+					args[i] = "";
 				}
-				char * file = args[i];
-				j = i;
-				while (j) {
-					args[j] = args[j - 1];
-					j--;
-				}
-				args[0] = file;
-
+				dup2(fd, 0);
 			}else {
 				if (!args[i][1]) {
 					args[i] = "";
