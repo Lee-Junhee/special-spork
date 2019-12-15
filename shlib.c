@@ -4,6 +4,7 @@
 #include<unistd.h>
 #include<string.h>
 #include<sys/stat.h>
+#include<sys/wait.h>
 #include"shlib.h"
 #include"shio.h"
 #include"dir.h"
@@ -22,7 +23,7 @@ int run(char *** args) {
 			}else {
 				cpid = fork();
 				if (cpid){
-					wait(status);
+					wait(&status);
 				}else {
 					execute(args[i]);
 				}
@@ -79,7 +80,7 @@ void execute(char ** args) {
 				if (entry) {
 					args[i + j] = entry;
 				}
-				wait(status);
+				wait(&status);
 			}else {
 				fd[1] = temp[1];
 				break;
@@ -119,9 +120,27 @@ void parse_exec(char ** args, int r, int w) {
 			i--;
 		}
 		execvp(newarg[0], newarg);
-
 	}
 
-	//execute
-	execvp(args[0], args);
+	//check for command and execute
+	int cpid = fork();
+	int status;
+	int fd[2];
+	pipe(fd);
+	if (cpid) {
+		close(fd[1]);
+		wait(&status);
+		if (WEXITSTATUS(status)) {
+			printf("%s: command not found\n", args[0]);
+		}else {
+			execvp(args[0], args);
+		}
+	}else {
+		char * check[3];
+		check[0] = "which";
+		check[1] = args[0];
+		check[2] = NULL;
+		dup2(fd[1], 1);
+		execvp(check[0], check);
+	}
 }
