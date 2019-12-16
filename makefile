@@ -5,7 +5,7 @@ else
 endif
 
 all: main.o shio.o shlib.o dir.o
-	$(CC) -o athena main.o shio.o shlib.o dir.o
+	$(CC) -o cash main.o shio.o shlib.o dir.o
 
 main.o: main.c shio.h shlib.h
 	$(CC) -c main.c
@@ -20,7 +20,7 @@ dir.o:
 	$(CC) -c dir.c
 
 run: all
-	./athena
+	./cash
 
 clean:
 	touch main.o
